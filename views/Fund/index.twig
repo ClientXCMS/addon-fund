@@ -1,0 +1,103 @@
+{% extends "layout.twig" %}
+
+{% block title trans("fund.add") %}
+
+{% block body %}
+
+    <section class="card card-body">
+        <h3 class="text-center mb-4 pb-2 text-primary fw-bold">{{ trans("fund.add") }}</h3>
+        <p class="text-center mb-5" id="textInput">
+        </p>
+        <p class="text-center mb-5">
+            {{ trans("fund.currentwallet", {"%wallet%": current_user().wallet ~ " " ~  config('app.currency' ) | symbol_for}) }}
+        </p>
+        <form method="POST" action="{{ path('fund.redirect.process') }}">
+            <div class="row">
+        <label for="range">{{ trans("amount") }}</label>
+        <input type="range" class="custom-range" min="{{ config('fundconfig.min') }}" max="{{ config('fundconfig.max') }}" id="range" name="amount" onchange="updateTextInput(this.value)">
+            </div>
+        <div class="row">
+            {{ csrf_input() }}
+
+            {% for index,type in types %}
+                <div class="col-xl-6 col-sm-12 col-md-6 col-12 mt-2">
+                    <label class="imagecheck mb-2 mt-2">
+                        <input name="type" type="radio" value="{{ type.name }}" {{ loop.first ? 'checked '}} class="imagecheck-input"
+                               data-tax="{{ type.taxAdded }}"
+                               data-price="{{ (price * (1 + (type.taxAdded / 100)) )| formatted_price(true) }}" />
+                        <div class="card card-large-icons imagecheck-figure">
+                            <div class="card-icon bg-primary text-white">
+                                <i class="{{ type.icon }}"></i>
+                            </div>
+                            <div class="card-body">
+                                <p>
+                                    {{ trans("pay_with") }}
+                                    {{ type.title | trans }}
+                                </p>
+                                <p class="text-muted">{% if type.taxAdded != 0 %}({{ trans("tax") }} : {{ type.taxAdded ~ "%" }}){% else %}&nbsp;{% endif %}{% if type.name == 'wallet' and current_user() != null and current_user().wallet != 0 %}({{ current_user().wallet | formatted_price(true, 'none') | trans }}) {% endif %}</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+            <div class="row">
+
+            <button class="btn btn-primary" style="margin-top: 30px;">{{ trans("fund.add") }}</button>
+            </div>
+        </form>
+            <h3 class="mb-4 mt-4 pb-2 text-primary fw-bold">{{ trans("fund.sendtouser") }}</h3>
+            <span class="text-muted">{{ trans("fund.sendtousersub") }}</span>
+            <form method="POST" action="{{ path('fund.transfer') }}">
+                {{ csrf_input() }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        {{ field("email", null, trans('email'), {type: 'email'}) }}
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        {{ field("amount", null, trans('amount'), {type: 'number', prefix: config('app.currency') | symbol_for}) }}
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 30px;">{{ trans("send") }}</button>
+            </form>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        const currency  = "{{ config('app.currency' ) | symbol_for }}"
+        window.addEventListener("load", (e) => {
+
+            Array.from(document.querySelectorAll(".imagecheck-input")).map(function (el) {
+                el.addEventListener("click", function (e) {
+                    taxChecked = el;
+                    updateTextInput(document.getElementById("range").value)
+
+                })
+                if (el.checked){
+                    taxChecked = el;
+                }
+            })
+            updateTextInput(document.getElementById("range").value)
+
+        })
+        let taxChecked;
+
+
+        function updateTextInput(val) {
+            const tax = taxChecked.dataset.tax / 100;
+            {% if _locale == 'fr_FR' %}
+            document.getElementById('textInput').innerHTML = "Vous allez recevoir " + val + " " + currency + " sur votre portefeuille virtuel après avoir payé " + (val * (1 + tax)).toLocaleString('us', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                + " " + currency;
+            {% else %}
+            document.getElementById('textInput').innerHTML = "You will receive " + val + " " + currency + " on your virtual wallet after paying " + (val * (1 + tax)).toLocaleString('us', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+
+            {% endif %}
+        }
+a
+
+    </script>
+{% endblock %}
