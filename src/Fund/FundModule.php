@@ -1,40 +1,39 @@
 <?php
 
-namespace App\Fund;
 
-use App\Admin\Database\SettingTable;
-use App\Fund\Actions\FundCancelAction;
-use App\Fund\Actions\FundIndexAction;
-use App\Fund\Actions\FundProcessAction;
-use App\Fund\Actions\FundReturnAction;
-use App\Fund\Actions\FundTransferAction;
-use ClientX\Module;
+namespace App\Dedipass;
+
+use App\Dedipass\Actions\DedipassAdminAction;
+use App\Dedipass\Actions\DedipassApiAction;
+use App\Fund\FundModule;
+use ClientX\Helpers\Str;
+use ClientX\ModuleCache;
 use ClientX\Renderer\RendererInterface;
 use ClientX\Router;
+use ClientX\Session\FlashService;
+use ClientX\Session\SessionInterface;
 use ClientX\Theme\ThemeInterface;
 use Psr\Container\ContainerInterface;
+use function ClientX\request;
 
-class FundModule extends Module
+class DedipassModule extends \ClientX\Module
 {
 
     const DEFINITIONS = __DIR__ . '/config.php';
-    const TRANSLATIONS = [
-        "fr_FR" => __DIR__ . "/trans/fr.php",
-        "en_GB" => __DIR__ . "/trans/en.php"
-    ];
     const MIGRATIONS = __DIR__ . '/db/migrations';
 
-    public function __construct(ContainerInterface $container, ThemeInterface $theme, SettingTable $table)
+    public function __construct(Router $router, RendererInterface $renderer, ThemeInterface $theme, ContainerInterface $container)
     {
-        $renderer = $container->get(RendererInterface::class);
-        $renderer->addPath('fund', $theme->getViewsPath() . '/Fund');
-        $router = $container->get(Router::class);
-        /** @var string */
-        $prefix = $container->get('clientarea.prefix');
-        $router->get($prefix . '/fund', FundIndexAction::class, 'fund.index');
-        $router->any($prefix . '/fund/process', FundProcessAction::class, 'fund.redirect.process');
-        $router->any($prefix . '/fund/[i:id]/cancel', FundCancelAction::class, 'fund.redirect.cancel');
-        $router->any($prefix . '/fund/[i:id]/return', FundReturnAction::class, 'fund.redirect.return');
-        $router->post($prefix . '/fund/transfer', FundTransferAction::class, 'fund.transfer');
+        $renderer->addPath('Dedipass', $theme->getViewsPath() . '/Dedipass');
+        $renderer->addPath('Dedipass_admin', __DIR__ . '/Views');
+        $router->crud($container->get('admin.prefix') . '/dedipass', DedipassAdminAction::class, 'dedipass.admin');
+        $router->post('/api/dedipass', DedipassApiAction::class, 'dedipass.api');
+        $modules = (new ModuleCache())->getModulesEnabled();
+        if (!in_array(FundModule::class, $modules)) {
+            $session = $container->get(SessionInterface::class);
+            if (Str::startsWith(request()->getUri()->getPath(), '/admin')) {
+                (new FlashService($session))->error('The Dedipass Module require the Fund Module to work');
+            }
+        }
     }
 }

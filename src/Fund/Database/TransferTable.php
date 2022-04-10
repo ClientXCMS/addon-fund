@@ -36,7 +36,7 @@ class TransferTable extends \ClientX\Database\Table
         $query = $this->makeQuery()
             ->where("mustbesentat < NOW()")
             ->where('state = :state')
-            ->setParameter('state', 'Pending');
+            ->setParameter('state', 'pending');
         if ($userId) {
             $query->where('user_id = :userId')
                 ->setParameter('userId', $userId);

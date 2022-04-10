@@ -71,9 +71,9 @@ class FundService
         $this->session->set('fund_errors', $errors);
     }
 
-    public function findForUser()
+    public function findForUser(int $userId = null)
     {
-        return $this->userTable->findForUser($this->getUserId());
+        return $this->transferTable->findForUser($userId ??$this->getUserId())->join('users as u', 'u.id = f.recipient_id')->select('f.*', 'u.email');
     }
     public function getErrors():array
     {
@@ -103,5 +103,27 @@ class FundService
         $recipient = $transaction->getUser();
         $recipient->addFund($transaction->getItems()[0]->getPrice());
         $this->userTable->updateWallet($recipient);
+    }
+
+    /**
+     * @return \App\Fund\Database\TransferTable
+     */
+    public function getTransferTable(): TransferTable
+    {
+        return $this->transferTable;
+    }
+
+    public function cancel($id)
+    {
+        $transfer = $this->transferTable->find($id);
+        if ($transfer->userId == $this->getUserId() && $transfer->state == 'pending') {
+            $this->transferTable->update($transfer->id, ['updated_at' => date('Y-m-d H:i:s')]);
+            $this->transferTable->cancel($transfer->id);
+            $user = $this->getUser();
+
+            $user->addFund($transfer->amount);
+            $this->userTable->updateWallet($user);
+            $this->flash->success('Done!');
+        }
     }
 }
