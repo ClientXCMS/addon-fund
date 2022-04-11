@@ -11,12 +11,15 @@
 
 				<div class="col-xl-9 col-sm-12 col-md-12 col-12">
 					<div class="row">
-						<input type="range" class="custom-range" min="{{ config('fundconfig.min') }}" max="{{ config('fundconfig.max') }}" id="range" name="amount" onchange="updateTextInput(this.value)">
+						<input type="range" class="custom-range" min="{{ config('fundconfig.min') }}" max="{{ config('fundconfig.max') }}" value="25" id="range" name="amount" onchange="updateTextInput(this.value)">
 					</div>
 
 					<div class="row">
 						{{ csrf_input() }}
+						{% if types is empty %}
+							<p>Please enable a payment module for enabled this section</p>
 
+						{% endif %}
 						{% for index,type in types %}
 							<div class="col-xl-6 col-sm-12 col-md-6 col-12 mt-2">
 								<label class="imagecheck mb-2 mt-2">
@@ -85,7 +88,7 @@
 				</div>
 			</form>
 		</div>
-	<div class="card card-body">
+	<div class="card card-body" style="margin-top: 30px;">
 
 		<h3 class="mt-4 pb-2 text-primary fw-bold">{{ trans("fund.sendtouser") }}</h3>
 		<span class="text-muted">{{ trans("fund.sendtousersub") }}</span>
@@ -121,9 +124,12 @@
 
 								<tr>
 									<td>{{ item.id }}</td>
-									<td>{{ item.amount | formatted_price(true) }}</td>
+									{% if current_user().id == item.userId %}
+										<td><p class="text-danger">-{{ item.amount | formatted_price(true) }}</p></td>
+									{% else %}
+										<td><p class="text-success">+{{ item.amount | formatted_price(true) }}</p></td>
+									{% endif %}
 									<td>{{ item.email }}</td>
-
 									<td>
 										{% if item.state == 'pending' %}
 											<span class="badge badge-primary">In Pending</span>
@@ -131,17 +137,15 @@
 											<span class="badge badge-success">Accepted</span>
 										{% elseif item.state == 'cancelled' %}
 											<span class="badge badge-warning">Cancelled</span>
-
 											{% else %}
 												<span class="badge badge-danger">Refused</span>
-
 										{% endif %}
 											</td>
 									<td>{{ item.updatedAt ? item.updatedAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
 
 									<td>{{ item.createdAt ? item.createdAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
 									<td>
-										{% if item.state == 'pending' %}
+										{% if item.state == 'pending' and current_user().id == item.userId %}
 										<a class="btn btn-warning" href="{{ path('fund.cancel', {id: item.id}) }}">Cancel</a>
 										{% endif %}
 									</td>

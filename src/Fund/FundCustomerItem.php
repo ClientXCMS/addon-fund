@@ -42,7 +42,8 @@ class FundCustomerItem implements NavigationItemInterface
             ->where("user_id = :user_id")
             ->params(['user_id' => $this->service->getUserId()])
             ->fetchAll();
-        return $renderer->render('@fund_admin/user', compact('transferts', 'addMoney'));
+        $user = $this->user;
+        return $renderer->render('@fund_admin/user', compact('transferts', 'addMoney', 'user'));
     }
 
 

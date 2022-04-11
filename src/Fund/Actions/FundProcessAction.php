@@ -41,6 +41,9 @@ class FundProcessAction extends Action
     public function __invoke(ServerRequestInterface $request)
     {
         $params = $request->getParsedBody();
+        if (empty($this->manager->getTypes())) {
+            return $this->back($request);
+        }
         $paymentType = $this->manager->getFromName($params['type'] ?? "wallet");
         try {
             $user = $this->getUser();

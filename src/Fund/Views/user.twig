@@ -27,7 +27,12 @@
                     {% for item in transferts %}
                         <tr>
                             <td>{{ item.id }}</td>
-                            <td>{{ item.amount | formatted_price(true) }}</td>
+
+                            {% if user.id == item.userId %}
+                                <td><p class="text-danger">-{{ item.amount | formatted_price(true) }}</p></td>
+                            {% else %}
+                                <td><p class="text-success">+{{ item.amount | formatted_price(true) }}</p></td>
+                            {% endif %}
                             <td>{{ item.email }}</td>
                             <td>
                                 {% if item.state == 'pending' %}

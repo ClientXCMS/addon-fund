@@ -73,7 +73,11 @@ class FundService
 
     public function findForUser(int $userId = null)
     {
-        return $this->transferTable->findForUser($userId ??$this->getUserId())->join('users as u', 'u.id = f.recipient_id')->select('f.*', 'u.email');
+        return $this->transferTable->makeQuery()
+        ->where('user_id = :userId OR recipient_id = :recipientId')
+            ->setParameter('userId', $userId ?? $this->getUserId())
+            ->setParameter('recipientId', $userId ?? $this->getUserId())
+            ->join('users as u', 'u.id = f.recipient_id')->select('f.*', 'u.email');
     }
     public function getErrors():array
     {

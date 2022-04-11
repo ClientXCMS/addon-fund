@@ -33,7 +33,6 @@ class FundIndexAction extends Action
 
         $errors = $this->service->getErrors();
         $transfers = $this->service->findForUser()->fetchAll();
-
         $addMoney = (new Query($this->service->getTransferTable()->getConnection()))
             ->setCommand("SELECT")
             ->into(\stdClass::class)
