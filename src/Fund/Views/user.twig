@@ -17,8 +17,7 @@
                         <th>{{ trans("amount") }}</th>
                         <th>{{ trans("email") }}</th>
                         <th>{{ trans("state2") }}</th>
-                        <th>Sent at/Cancelled</th>
-                        <th>{{ trans("created_at") }}</th>
+                        <th>Sent at/Cancelled At</th>
                         <th>{{ trans("action") }}</th>
                     </tr>
                     </thead>
@@ -33,12 +32,18 @@
                             {% else %}
                                 <td><p class="text-success">+{{ item.amount | formatted_price(true) }}</p></td>
                             {% endif %}
-                            <td>{{ item.email }}</td>
+
+                            {% if current_user().id == item.userId %}
+
+                                <td>{{ item.emailsender }}</td>
+                            {% else %}
+                                <td>{{ item.emailrecipient }}</td>
+                            {% endif %}
                             <td>
                                 {% if item.state == 'pending' %}
                                     <span class="badge badge-primary">In Pending</span>
                                 {% elseif item.state == 'accepted' %}
-                                    <span class="badge badge-success">Accepted</span>
+                                    <span class="badge badge-success">Sent</span>
                                 {% elseif item.state == 'cancelled' %}
                                     <span class="badge badge-warning">Cancelled</span>
 
@@ -49,7 +54,6 @@
                             </td>
                             <td>{{ item.updatedAt ? item.updatedAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
 
-                            <td>{{ item.createdAt ? item.createdAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
                             <td>
                                 {% if item.state == 'pending' %}
                                     <a class="btn btn-warning" href="{{ path('fund.cancel', {id: item.id}) }}">Cancel</a>

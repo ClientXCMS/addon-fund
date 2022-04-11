@@ -92,6 +92,61 @@
 
 		<h3 class="mt-4 pb-2 text-primary fw-bold">{{ trans("fund.sendtouser") }}</h3>
 		<span class="text-muted">{{ trans("fund.sendtousersub") }}</span>
+
+		{% if transfers is not empty %}
+			<div class="col-sm-12 col-md-12" >
+				<h4>{{ trans("fund.history") }}</h4>
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+						<tr>
+							<th>#</th>
+							<th>{{ trans("amount") }}</th>
+							<th>{{ trans("email") }}</th>
+							<th>{{ trans("state2") }}</th>
+							<th>Sent at/Cancelled At</th>
+							<th>{{ trans("action") }}</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for item in transfers %}
+							<tr>
+								<td>{{ item.id }}</td>
+								{% if current_user().id == item.userId %}
+									<td><p class="text-danger">-{{ item.amount | formatted_price(true) }}</p></td>
+								{% else %}
+									<td><p class="text-success">+{{ item.amount | formatted_price(true) }}</p></td>
+								{% endif %}
+								{% if current_user().id == item.userId %}
+
+								<td>{{ item.emailsender }}</td>
+								{% else %}
+									<td>{{ item.emailrecipient }}</td>
+								{% endif %}
+								<td>
+									{% if item.state == 'pending' %}
+										<span class="badge badge-primary">In Pending</span>
+									{% elseif item.state == 'accepted' %}
+										<span class="badge badge-success">Sent</span>
+									{% elseif item.state == 'cancelled' %}
+										<span class="badge badge-warning">Cancelled</span>
+									{% else %}
+										<span class="badge badge-danger">Refused</span>
+									{% endif %}
+								</td>
+								<td>{{ item.updatedAt ? item.updatedAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
+								<td>
+									{% if item.state == 'pending' and current_user().id == item.userId %}
+										<a class="btn btn-warning" href="{{ path('fund.cancel', {id: item.id}) }}">Cancel</a>
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		{% endif %}
 		<form method="POST" action="{{ path('fund.transfer') }}">
 			{{ csrf_input() }}
 			<div class="row">
@@ -103,59 +158,6 @@
 				</div>
 			</div>
 
-			{% if transfers is not empty %}
-				<div class="col-sm-12 col-md-12" >
-					<h4>{{ trans("fund.history") }}</h4>
-					<div class="table-responsive">
-						<table class="table table-bordered">
-							<thead>
-							<tr>
-								<th>#</th>
-								<th>{{ trans("amount") }}</th>
-								<th>{{ trans("email") }}</th>
-								<th>{{ trans("state2") }}</th>
-								<th>Sent at/Cancelled</th>
-								<th>{{ trans("created_at") }}</th>
-								<th>{{ trans("action") }}</th>
-							</tr>
-							</thead>
-							<tbody>
-							{% for item in transfers %}
-
-								<tr>
-									<td>{{ item.id }}</td>
-									{% if current_user().id == item.userId %}
-										<td><p class="text-danger">-{{ item.amount | formatted_price(true) }}</p></td>
-									{% else %}
-										<td><p class="text-success">+{{ item.amount | formatted_price(true) }}</p></td>
-									{% endif %}
-									<td>{{ item.email }}</td>
-									<td>
-										{% if item.state == 'pending' %}
-											<span class="badge badge-primary">In Pending</span>
-										{% elseif item.state == 'accepted' %}
-											<span class="badge badge-success">Accepted</span>
-										{% elseif item.state == 'cancelled' %}
-											<span class="badge badge-warning">Cancelled</span>
-											{% else %}
-												<span class="badge badge-danger">Refused</span>
-										{% endif %}
-											</td>
-									<td>{{ item.updatedAt ? item.updatedAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
-
-									<td>{{ item.createdAt ? item.createdAt | formatted_date('Y/m/d H:i')  : '--' }}</td>
-									<td>
-										{% if item.state == 'pending' and current_user().id == item.userId %}
-										<a class="btn btn-warning" href="{{ path('fund.cancel', {id: item.id}) }}">Cancel</a>
-										{% endif %}
-									</td>
-								</tr>
-							{% endfor %}
-							</tbody>
-						</table>
-				</div>
-				</div>
-				{% endif %}
 			<button class="btn btn-primary" style="margin-top: 30px;">{{ trans("send") }}</button>
 		</form>
 	</div>

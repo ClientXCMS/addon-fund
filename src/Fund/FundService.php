@@ -77,7 +77,8 @@ class FundService
         ->where('user_id = :userId OR recipient_id = :recipientId')
             ->setParameter('userId', $userId ?? $this->getUserId())
             ->setParameter('recipientId', $userId ?? $this->getUserId())
-            ->join('users as u', 'u.id = f.recipient_id')->select('f.*', 'u.email');
+            ->join('users as u', 'u.id = f.recipient_id')->select('f.*', 'u.email as emailsender', 'us.email as emailrecipient')
+            ->join('users as us', 'us.id = f.user_id');
     }
     public function getErrors():array
     {
