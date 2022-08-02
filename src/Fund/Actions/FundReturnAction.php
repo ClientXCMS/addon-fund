@@ -66,10 +66,13 @@ class FundReturnAction extends Action
             if ($transaction != null && ($transaction->getState() === $transaction::PENDING || $transaction->getPaymentType() === 'stripe')) {
                 $type = $this->purchaseProduct->getFromName($transaction->getPaymentType());
                 $response = $this->purchaseProduct->execute($type, $transaction, $request, $this->getUser());
-                $this->service->addFund($transaction);
-                $this->transactionService->complete($transaction);
-                $this->transactionService->delivre($transaction->getItems()[0]);
-                $this->success($this->trans("serviceactions.transactions.success"));
+                
+                if ($response instanceof Transaction && $response->getState() === Transaction::COMPLETED) {
+                    $this->service->addFund($transaction);
+                    $this->transactionService->complete($transaction);
+                    $this->transactionService->delivre($transaction->getItems()[0]);
+                    $this->success($this->trans("serviceactions.transactions.success"));
+                }
             }
 
             return $this->redirectToRoute('fund.index');
