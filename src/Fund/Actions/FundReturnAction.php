@@ -2,9 +2,9 @@
 
 namespace App\Fund\Actions;
 
-use App\Basket\BasketRedirectUri;
 use App\Fund\FundRedirectUri;
 use App\Fund\FundService;
+use App\Shop\Entity\Transaction;
 use App\Shop\Services\TransactionService;
 use ClientX\Actions\Action;
 use ClientX\Auth;
@@ -23,15 +23,10 @@ class FundReturnAction extends Action
 
     protected LoggerInterface $logger;
     protected FundService $service;
-    /**
-     * @var \App\Shop\Services\TransactionService
-     */
     private TransactionService $transactionService;
-    /**
-     * @var \ClientX\Payment\PaymentManager
-     */
+
     private PaymentManager $purchaseProduct;
-    protected $redirect = FundRedirectUri::class;
+    protected string $redirect = FundRedirectUri::class;
 
 
     public function __construct(
@@ -66,10 +61,13 @@ class FundReturnAction extends Action
             if ($transaction != null && ($transaction->getState() === $transaction::PENDING || $transaction->getPaymentType() === 'stripe')) {
                 $type = $this->purchaseProduct->getFromName($transaction->getPaymentType());
                 $response = $this->purchaseProduct->execute($type, $transaction, $request, $this->getUser());
-                $this->service->addFund($transaction);
-                $this->transactionService->complete($transaction);
-                $this->transactionService->delivre($transaction->getItems()[0]);
-                $this->success($this->trans("serviceactions.transactions.success"));
+                
+                if ($response instanceof Transaction && $response->getState() === Transaction::COMPLETED) {
+                    $this->service->addFund($transaction);
+                    $this->transactionService->complete($transaction);
+                    $this->transactionService->delivre($transaction->getItems()[0]);
+                    $this->success($this->trans("serviceactions.transactions.success"));
+                }
             }
 
             return $this->redirectToRoute('fund.index');

@@ -1,6 +1,12 @@
 <?php
 return [
     'fund' => [
+        'admin' => [
+            'max_fund' => 'Fund maximum pouvant être ajouter',
+            'min_fund' => 'Fund minimum devant être ajouter',
+            'maxtransfer_fund' => 'Fund maximum pouvant être transférer sur un autre compte',
+            'mintransfer_fund' => 'Fund minimum pouvant être transférer sur un autre compte',
+        ],
         'history' => 'Historique',
         'add' => 'Ajout de fond',
         'sendtouser' => 'Envoyer à un utilisateur',

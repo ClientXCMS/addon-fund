@@ -29,7 +29,7 @@ class FundModule extends Module
     {
         $renderer = $container->get(RendererInterface::class);
         $renderer->addPath('fund', $theme->getViewsPath() . '/Fund');
-        $renderer->addPath('fund_admin', __DIR__. '/views');
+        $renderer->addPath('fund_admin', __DIR__. '/Views');
         $router = $container->get(Router::class);
         /** @var string */
         $prefix = $container->get('clientarea.prefix');
