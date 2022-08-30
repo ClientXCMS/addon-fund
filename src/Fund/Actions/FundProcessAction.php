@@ -44,6 +44,10 @@ class FundProcessAction extends Action
         if (empty($this->manager->getTypes())) {
             return $this->back($request);
         }
+        
+		if (!array_key_exists('type', $params)){
+			  return $this->back($request);
+		}
         $paymentType = $this->manager->getFromName($params['type'] ?? "wallet");
         try {
             $user = $this->getUser();
