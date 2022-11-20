@@ -21,7 +21,7 @@ return [
     FundNavigation::class   => autowire()->constructor(get('addfund.types')),
     'navigation.list' => add(get(FundNavigation::class)),
     'cron.schedules' => add(FundSchedule::class),
-    \App\Fund\Actions\FundProcessAction::class => autowire()->constructorParameter('enabletransfer', get('fundconfig.enabletransfer')),
+    \App\Fund\Actions\FundTransferAction::class => autowire()->constructorParameter('enabletransfer', get('fundconfig.enabletransfer')),
     'admin.customer.items' => add(get(FundCustomerItem::class)),
     'admin.settings' => add(get(\App\Fund\FundSettings::class)),
 
