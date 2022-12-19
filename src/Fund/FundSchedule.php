@@ -20,6 +20,9 @@ class FundSchedule extends \ClientX\Cron\AbstractCron
     public function run(): array
     {
         $tmp = $this->service->makeTransfers();
+        if (empty($tmp)){
+            return [];
+        }
         return ["fund" => $tmp];
     }
 }
