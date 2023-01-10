@@ -63,7 +63,6 @@ class FundReturnAction extends Action
                 $response = $this->purchaseProduct->execute($type, $transaction, $request, $this->getUser());
                 
                 if ($response instanceof Transaction && $response->getState() === Transaction::COMPLETED) {
-                    $this->service->addFund($transaction);
                     $this->transactionService->complete($transaction);
                     $this->transactionService->delivre($transaction->getItems()[0]);
                     $this->success($this->trans("serviceactions.transactions.success"));
