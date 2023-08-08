@@ -8,18 +8,19 @@ use DateTime;
 
 class AddFund implements Orderable
 {
-    private int $id;
-    private float $amount;
-    private int $userId;
-    private string $currency;
+    public int $id;
+    public float $amount;
+    public int $userId;
+    public string $currency;
 
-    public function __construct(float $amount, int $userId, string $currency, int $id)
+    public function __construct(?float $amount=null, ?int $userId=null, ?string $currency=null, ?int $id=null)
     {
-
-        $this->amount = $amount;
-        $this->userId = $userId;
-        $this->currency = $currency;
-        $this->id = $id;
+		if ($amount){
+            $this->amount = $amount;
+            $this->userId = $userId;
+            $this->currency = $currency;
+            $this->id = $id;
+	    }
     }
 
     public function getId(): ?int
