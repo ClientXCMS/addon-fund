@@ -1,0 +1,13 @@
+{
+    "name": "Sentry",
+    "description": "Sentry addon",
+    "uuid": "sentry",
+    "version": "1.0",
+    "author": {
+        "name": "MartinDev",
+        "email": "martin@clientxcms.com"
+    },
+    "providers": [
+        "App\\Addons\\Sentry\\SentryServiceProvider"
+    ]
+}
