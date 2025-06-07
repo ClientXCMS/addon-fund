@@ -90,7 +90,7 @@ class AddFundDTO
 
     public function addFund(InvoiceItem $invoiceItem)
     {
-        $this->invoice()->customer->addFund($invoiceItem->unit_price);
+        $this->invoice()->customer->addFund($invoiceItem->unit_price_ht);
     }
 
     public static function createInvoice(array $validated)
