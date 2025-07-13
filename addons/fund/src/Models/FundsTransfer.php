@@ -11,6 +11,36 @@ namespace App\Addons\Fund\Models;
 
 use App\Models\Account\Customer;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $customer_id
+ * @property int $recipient_id
+ * @property string $amount
+ * @property string $currency
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $transferred_at
+ * @property \Illuminate\Support\Carbon|null $transferable_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Customer $customer
+ * @property-read Customer $recipient
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereRecipientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereTransferableAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereTransferredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FundsTransfer whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class FundsTransfer extends \Illuminate\Database\Eloquent\Model
 {
     protected $table = 'funds_transfers';

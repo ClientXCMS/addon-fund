@@ -96,18 +96,13 @@ class AddFundDTO
     public static function createInvoice(array $validated)
     {
         $amount = $validated['amount'];
-        $vat = 0;
-        $total = $amount + $vat;
         $days = setting('remove_pending_invoice', 0) != 0 ? setting('remove_pending_invoice') : 7;
         $invoice = Invoice::create([
             'customer_id' => auth()->id(),
             'due_date' => now()->addDays($days),
-            'total' => $total,
+            'total' => $amount,
             'subtotal' => $amount,
             'currency' => currency(),
-            'setupfees' => 0,
-            'tax' => $vat,
-            'status' => 'pending',
             'notes' => 'Credit added to account',
             'paymethod' => $validated['gateway'],
             'invoice_number' => Invoice::generateInvoiceNumber(),
@@ -118,13 +113,12 @@ class AddFundDTO
             'name' => __('fund::messages.invoice.add_credit', ['amount' => $validated['amount']]),
             'quantity' => 1,
             'unit_price_ht' => $amount,
-            'unit_price_ttc' => $total,
+            'unit_price_ttc' => $amount,
             'unit_setup_ht' => 0,
             'unit_setup_ttc' => 0,
-            'total' => $total,
-            'tax' => $vat,
+            'total' => $amount,
+            'tax' => 0,
             'subtotal' => $amount,
-            'setupfee' => 0,
             'discount' => [],
             'type' => AddFundDTO::ADD_FUND_TYPE,
             'related_id' => $invoice->id,

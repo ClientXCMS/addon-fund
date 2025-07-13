@@ -37,14 +37,7 @@
             </div>
             <div class="dark:text-gray-400 text-gray-800">
                 <h2 class="text-xl font-semibold text-right text-gray-800 dark:text-gray-200 mb-4">{{ __('store.config.summary') }}</h2>
-                <div class="flex justify-between mb-2">
-                    <span>{{ __('fund::messages.admin.settings.fields.min_amount') }}</span>
-                    <span>{{ formatted_price(setting('fund_credit_min_amount', '5')) }}</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                    <span>{{ __('fund::messages.admin.settings.fields.max_amount') }}</span>
-                    <span>{{ formatted_price(setting('fund_credit_max_amount', '1000')) }}</span>
-                </div>
+
 
                 <div class="flex justify-between mb-2">
                     <span>{{ __('fund::messages.card.currentbalance') }}</span>
@@ -52,15 +45,19 @@
                 </div>
 
                 <div class="flex justify-between mb-2">
+                    <span>{{ __('fund::messages.card.next_balance') }}</span>
+                    <span id="balance">{{ formatted_price(auth('web')->user()->balance) }}</span>
+                </div>
+                <div class="flex justify-between mb-2">
                     <span>{{ __('fund::messages.card.amount') }}</span>
-                    <span id="amount" data-currency="{{ currency() }}">0</span>
+                    <span id="amount" data-currency="{{ currency() }}" data-balance="{{ auth('web')->user()->balance }}">0</span>
                 </div>
                 <hr class="my-2">
                 <div class="flex justify-between mb-2">
                     <span class="font-semibold">{{ __('store.total') }}</span>
                     <span class="font-semibold" id="total">0</span>
                 </div>
-                <button class="bg-indigo-600 text-white py-2 px-4 rounded-lg mt-4 w-full" type="submit">{{ __('global.add') }}</button>
+                <button class="bg-indigo-600 text-white py-2 px-4 rounded-lg mt-4 w-full" type="submit">{{ __('global.pay') }}</button>
 
             </div>
         </div>

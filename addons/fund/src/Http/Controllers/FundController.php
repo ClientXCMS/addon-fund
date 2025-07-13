@@ -11,6 +11,7 @@ namespace App\Addons\Fund\Http\Controllers;
 
 use App\Addons\Fund\DTO\AddFundDTO;
 use App\Exceptions\WrongPaymentException;
+use App\Models\Account\Customer;
 use App\Models\Billing\Gateway;
 use Illuminate\Http\Request;
 
@@ -45,9 +46,13 @@ class FundController extends \App\Http\Controllers\Controller
     public function createTransfer(Request $request)
     {
         $validated = $request->validate([
-            'recipient' => 'required|exists:customers,email',
+            'recipient' => 'required|email',
             'amount' => 'required|numeric|min:'.setting('fund_transfer_min_amount', 1).'|max:'.setting('fund_transfer_max_amount', 1000),
         ]);
+        $recipient = $validated['recipient'];
+        if (Customer::where('email', $recipient)->doesntExist()) {
+            return back()->with('error', __('helpdesk.admin.tickets.customer_not_found'));
+        }
         try {
             $transfer = AddFundDTO::createTransfer($validated['recipient'], $validated['amount']);
         } catch (\Exception $e) {

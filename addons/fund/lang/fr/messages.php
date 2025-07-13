@@ -33,6 +33,7 @@ return [
         'amount' => 'Montant à créditer',
         'gateway' => 'Moyen de paiement',
         'currentbalance' => 'Solde actuel',
+        'next_balance' => 'Prochain solde',
         'error' => 'Impossible de créditer votre compte. Aucun moyen de paiement n\'est disponible. Veuillez contacter le support.',
     ],
     'transfer_table' => [
@@ -46,7 +47,7 @@ return [
         ],
         'settings' => [
             'title' => 'Paramètres Fonds',
-            'subtitle' => 'Gestion des paramètres de l\'extension Fonds',
+            'subtitle' => 'Gérez les paramètres de l\'extension Fonds, y compris les montants minimum et maximum, ainsi que les transferts entre comptes.',
             'success' => 'Paramètres enregistrés avec succès',
             'fields' => [
                 'max_amount' => 'Montant maximum',
