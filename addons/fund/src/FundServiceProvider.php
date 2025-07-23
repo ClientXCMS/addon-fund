@@ -51,7 +51,13 @@ class FundServiceProvider extends BaseAddonServiceProvider
             require addon_path('fund', 'routes/web.php');
         });
         $settings = $this->app->make('settings');
-        $settings->addCardItem('extensions', 'fund', 'fund::messages.admin.settings.title', 'fund::messages.admin.settings.subtitle', 'bi bi-cash-coin', [FundAdminController::class, 'settings'], Permission::MANAGE_EXTENSIONS);
-        $settings->addCardItem('extensions', 'fund_transfers', 'fund::messages.admin.transfers.title', 'fund::messages.admin.transfers.subtitle', 'bi bi-cash-coin', [FundAdminController::class, 'transfers'], Permission::MANAGE_EXTENSIONS);
+        $settings->setDefaultValue('fund_credit_min_amount', 5);
+        $settings->setDefaultValue('fund_credit_max_amount', 1000);
+        $settings->setDefaultValue('fund_transfer_min_amount', 5);
+        $settings->setDefaultValue('fund_transfer_max_amount', 1000);
+        $settings->setDefaultValue('fund_transfer_minutes_delay', 5);
+        $settings->setDefaultValue('fund_transfer_min_invoice', 5);
+        $settings->addCardItem('store', 'fund', 'fund::messages.admin.settings.title', 'fund::messages.admin.settings.subtitle', 'bi bi-cash-coin', [FundAdminController::class, 'settings'], Permission::MANAGE_EXTENSIONS);
+        $settings->addCardItem('billing', 'fund_transfers', 'fund::messages.admin.transfers.title', 'fund::messages.admin.transfers.subtitle', 'bi bi-cash-coin', [FundAdminController::class, 'transfers'], Permission::MANAGE_EXTENSIONS);
     }
 }
