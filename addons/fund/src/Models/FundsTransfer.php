@@ -12,7 +12,7 @@ namespace App\Addons\Fund\Models;
 use App\Models\Account\Customer;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $customer_id
@@ -74,8 +74,8 @@ class FundsTransfer extends \Illuminate\Database\Eloquent\Model
         $this->status = 'completed';
         $this->transferred_at = now();
         $this->save();
-        $this->customer->addFund(-$this->amount);
-        $this->recipient->addFund($this->amount);
+        $this->customer->addFund(-$this->amount, 'Transfer to ' . $this->recipient->name);
+        $this->recipient->addFund($this->amount, 'Transfer from ' . $this->customer->name);
 
         return true;
     }
