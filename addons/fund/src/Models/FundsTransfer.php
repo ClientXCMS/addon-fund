@@ -12,7 +12,7 @@ namespace App\Addons\Fund\Models;
 use App\Models\Account\Customer;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $customer_id
